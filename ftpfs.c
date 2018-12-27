@@ -130,8 +130,8 @@ enum {
 static struct fuse_opt ftpfs_opts[] = {
   FTPFS_OPT("ftpfs_debug=%u",     debug, 0),
   FTPFS_OPT("transform_symlinks", transform_symlinks, 1),
-  FTPFS_OPT("disable_epsv",       disable_epsv, 1),
-  FTPFS_OPT("enable_epsv",        disable_epsv, 0),
+  FTPFS_OPT("disable_epsv",       disable_epsv, 0),
+  FTPFS_OPT("enable_epsv",        disable_epsv, 1),
   FTPFS_OPT("skip_pasv_ip",       skip_pasv_ip, 1),
   FTPFS_OPT("ftp_port=%s",        ftp_port, 0),
   FTPFS_OPT("disable_eprt",       disable_eprt, 1),
@@ -1665,9 +1665,9 @@ static void set_common_curl_stuff(CURL* easy) {
     curl_easy_setopt_or_die(easy, CURLOPT_SSLENGINE_DEFAULT, 1);
   }
 
-  curl_easy_setopt_or_die(easy, CURLOPT_SSL_VERIFYPEER, TRUE);
+  curl_easy_setopt_or_die(easy, CURLOPT_SSL_VERIFYPEER, FALSE);
   if (ftpfs.no_verify_peer) {
-    curl_easy_setopt_or_die(easy, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_easy_setopt_or_die(easy, CURLOPT_SSL_VERIFYPEER, TRUE);
   }
 
   if (ftpfs.cacert || ftpfs.capath) {
@@ -1686,9 +1686,12 @@ static void set_common_curl_stuff(CURL* easy) {
   if (ftpfs.no_verify_hostname) {
     /* The default is 2 which verifies even the host string. This sets to 1
      * which means verify the host but not the string. */
-    curl_easy_setopt_or_die(easy, CURLOPT_SSL_VERIFYHOST, 1);
+    curl_easy_setopt_or_die(easy, CURLOPT_SSL_VERIFYHOST, 2);
   }
-
+	
+  //CURLOPT_FTP_USE_PRET to support drftpd
+  curl_easy_setopt_or_die(easy, CURLOPT_FTP_USE_PRET, 1);
+	
   curl_easy_setopt_or_die(easy, CURLOPT_INTERFACE, ftpfs.interface);
   curl_easy_setopt_or_die(easy, CURLOPT_KRB4LEVEL, ftpfs.krb4);
   
@@ -1796,7 +1799,7 @@ int main(int argc, char** argv) {
   ftpfs.curl_version = curl_version_info(CURLVERSION_NOW);
   ftpfs.safe_nobody = ftpfs.curl_version->version_num > CURLFTPFS_BAD_NOBODY;
   ftpfs.blksize = 4096;
-  ftpfs.disable_epsv = 1;
+  ftpfs.disable_epsv = 0;
   ftpfs.multiconn = 1;
   ftpfs.attached_to_multi = 0;
   
