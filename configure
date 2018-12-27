@@ -19981,11 +19981,11 @@ fi
 echo "${ECHO_T}$libcurl_cv_lib_curl_version" >&6; }
 
 	_libcurl_version=`echo $libcurl_cv_lib_curl_version | $_libcurl_version_parse`
-	_libcurl_wanted=`echo 7.17.0 | $_libcurl_version_parse`
+	_libcurl_wanted=`echo 7.20.0 | $_libcurl_version_parse`
 
         if test $_libcurl_wanted -gt 0 ; then
-	   { echo "$as_me:$LINENO: checking for libcurl >= version 7.17.0" >&5
-echo $ECHO_N "checking for libcurl >= version 7.17.0... $ECHO_C" >&6; }
+	   { echo "$as_me:$LINENO: checking for libcurl >= version 7.20.0" >&5
+echo $ECHO_N "checking for libcurl >= version 7.17200... $ECHO_C" >&6; }
 if test "${libcurl_cv_lib_version_ok+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
